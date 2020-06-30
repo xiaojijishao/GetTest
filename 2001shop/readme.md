@@ -1,0 +1,9 @@
+#项目技术总结
+##前端
+###后台
+HTML、CSS、javascript、jQuery、boostrap、layui、Ajax、json、
+Validform、jquery.dataTables、H-ui、序列化和反序列化、jquery-form、
+ztree、UEditor、WebUploader、WdatePicker
+##后端
+###后台
+servlet、lombok、BeanUtils、DBUtils、Druid、json、fastjson

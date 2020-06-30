@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+	<meta name="format-detection" content="telephone=no, email=no"/>
+	<meta charset="UTF-8">
+	<title>购物车</title>
+	<link rel="stylesheet" href="themes/css/core.css">
+	<link rel="stylesheet" href="themes/css/icon.css">
+	<link rel="stylesheet" href="themes/css/home.css">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<link href="iTunesArtwork@2x.png" sizes="114x114" rel="apple-touch-icon-precomposed">
+</head>
+<body>
+
+	<header class="aui-header-default aui-header-fixed ">
+		<a href="javascript:history.back(-1)" class="aui-header-item">
+			<i class="aui-icon aui-icon-back"></i>
+		</a>
+		<div class="aui-header-center aui-header-center-clear">
+			<div class="aui-header-center-logo">
+				<div class="">购物车(6)</div>
+			</div>
+		</div>
+		<a href="#" class="aui-header-item-icon"   style="min-width:0">
+			<i class="aui-icon aui-icon-member"></i>
+		</a>
+	</header>
+	<section class="aui-car-content">
+		<div class="aui-dri"></div>
+		<div class="aui-car-box">
+			<div class="aui-car-box-name">
+				<input type="checkbox" class="check goods-check shopCheck">
+				<h3>
+					<a href="#">艾畅旗舰店</a>
+				</h3>
+				<div class="aui-car-coupons">
+					<a href="#">领券</a>
+					<a href="#">编辑</a>
+				</div>
+			</div>
+			<div class="aui-car-box-list">
+				<ul id="cart">
+
+				</ul>
+			</div>
+
+			<div class="aui-shopPrice">
+				本店总计：￥
+				<span class="aui-total-amount ShopTotal total">3990.00</span>
+			</div>
+		</div>
+	</section>
+	<div class="aui-payment-bar">
+		<div class="all-checkbox"><input type="checkbox" class="check goods-check" id="AllCheck">全选</div>
+		<div class="shop-total">
+			<strong>合计：<i class="total" id="AllTotal">399.00</i></strong>
+		</div>
+		<a href="#" class="settlement" onclick="goOrder()">去结算</a>
+	</div>
+	<script src="themes/js/jquery.min.js"></script>
+	<script src="themes/js/aui-car.js"></script>
+	<script type="text/javascript" src="/admin/assets/layer/layer.js"></script>
+	<script type="text/javascript">
+
+		$(function () {
+			var url = "http://localhost:8080/api/home/cartItem";
+			var requestData = {'a':'list'};
+			$.post(url,requestData,function(responseData){
+				var list = eval('('+responseData+')');
+				//console.dir(list);
+
+				var content='';
+				$.each(list,function(i,d){
+
+					var pic = d.product.images.split(',');
+					if(pic.length == 0){
+						pic[0] = '/static/no.jpg';
+					}
+
+					content += '<li>\n' +
+							'\t\t\t\t\t\t<div class="aui-car-box-list-item">\n' +
+							'\t\t\t\t\t\t\t<input type="checkbox" class="check goods-check goodsCheck" name="id" value="'+d.cartItem.id+'">\n' +
+							'\t\t\t\t\t\t\t<div class="aui-car-box-list-img">\n' +
+							'\t\t\t\t\t\t\t\t<a href="ui-product.html">\n' +
+							'\t\t\t\t\t\t\t\t\t<img src="'+pic[0]+'" alt="">\n' +
+							'\t\t\t\t\t\t\t\t</a>\n' +
+							'\t\t\t\t\t\t\t</div>\n' +
+							'\t\t\t\t\t\t\t<div class="aui-car-box-list-text">\n' +
+							'\t\t\t\t\t\t\t\t<h4>\n' +
+							'\t\t\t\t\t\t\t\t\t<a href="ui-product.html">'+d.product.name+'</a>\n' +
+							'\t\t\t\t\t\t\t\t</h4>\n' +
+							'\t\t\t\t\t\t\t\t<div class="aui-car-box-list-text-brief">\n' +
+							'\t\t\t\t\t\t\t\t\t<span>简介:'+d.product.intro+'</span>\n' +
+							'\t\t\t\t\t\t\t\t</div>\n' +
+							'\t\t\t\t\t\t\t\t<div class="aui-car-box-list-text-price">\n' +
+							'\t\t\t\t\t\t\t\t\t<div class="aui-car-box-list-text-pri">\n' +
+							'\t\t\t\t\t\t\t\t\t\t￥<b class="price">'+d.product.xprice+'</b>\n' +
+							'\t\t\t\t\t\t\t\t\t</div>\n' +
+							'\t\t\t\t\t\t\t\t\t<div class="aui-car-box-list-text-arithmetic">\n' +
+							'\t\t\t\t\t\t\t\t\t\t<a href="javascript:;" class="minus" onclick="minus(this,'+d.cartItem.pid+')">-</a>\n' +
+							'\t\t\t\t\t\t\t\t\t\t<span class="num">'+d.cartItem.num+'</span>\n' +
+							'\t\t\t\t\t\t\t\t\t\t<a href="javascript:;" class="plus" onclick="plus(this,'+d.cartItem.pid+')">+</a>\n' +
+							'\t\t\t\t\t\t\t\t\t</div>\n' +
+							'\t\t\t\t\t\t\t\t</div>\n' +
+							'\t\t\t\t\t\t\t</div>\n' +
+							'\n' +
+							'\t\t\t\t\t\t</div>\n' +
+							'\t\t\t\t\t\t<div class="aui-dri"></div>\n' +
+							'\t\t\t\t\t</li>';
+				});
+				$('#cart').empty().append(content);
+
+				total();
+
+			});
+
+
+
+		});
+
+		function total(){
+			//计算总计
+			var sum = 0;
+			$('.price').each(function (i,price) {
+				sum += parseFloat($(price).text())* parseInt($($('.num').get(i)).text());//取到的都是js对象
+			});
+			$('.total').text(sum);
+		}
+
+		function minus(obj,pid){
+
+			var loadIndex = layer.load();
+
+			//console.dir(this);//window
+			var num = $(obj).next('.num');
+
+			//发送请求 ，同步 数据库数据
+			var url = "http://localhost:8080/api/home/cartItem";
+			var requestData = {'a':'change','pid':pid,'num':-1};
+			$.post(url,requestData,function(responseData){
+				var data = eval('('+responseData+')');
+				layer.close(loadIndex);
+				if(data.code == 200){
+					num.text(num.text() == 1 ? 1 :  parseInt(num.text())-1);
+
+					total();
+				}else{
+					layer.msg('网络异常');
+				}
+
+			});
+		}
+
+		function plus(obj,pid) {
+			var loadIndex = layer.load();
+
+			var num = $(obj).prev('.num');
+
+			//发送请求 ，同步 数据库数据
+			var url = "http://localhost:8080/api/home/cartItem";
+			var requestData = {'a':'change','pid':pid,'num':1};
+			$.post(url,requestData,function(responseData){
+				var data = eval('('+responseData+')');
+				layer.close(loadIndex);
+				if(data.code == 200){
+					num.text(parseInt(num.text()) + 1);
+
+					total();
+				}else{
+					layer.msg('网络异常');
+				}
+			});
+
+		}
+		function goOrder(){
+			var ids = "";
+			$.each($("[name='id']:checked"),function(i,d){
+				ids += $(d).val()+'-';
+			});
+			ids = ids.substring(0,ids.length-1);
+			if($("[name='id']:checked").length > 0){
+				location.href='order.html?ids='+ids;
+			}else{
+				layer.msg('至少选择一个商品');
+			}
+
+		}
+
+	</script>
+</body>
+</html>

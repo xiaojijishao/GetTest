@@ -1,0 +1,6 @@
+package com.shop.dao.inte;
+
+import com.shop.entity.{?};
+
+public interface {?}DaoInte extends BaseDaoInte<{?}>{
+}
